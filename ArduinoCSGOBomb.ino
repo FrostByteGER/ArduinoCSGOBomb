@@ -1,53 +1,91 @@
 
-// Led Pin
-int ledPin = 13;
 
-// set Pin 0-3 to Input and Pin 4-6 to Output
-int inputPin[] = {INPUT,INPUT,INPUT,INPUT,OUTPUT,OUTPUT,OUTPUT};
 
-// set Pin 0-12 to Output
-int outputPins = 12;
-
-// set Numbers
-int dig[] = {0,0,0,0};
-
-// GameModes
 int mode = 0;
-int modeNone = 0;
-int modeSet = 1;
-int modedef = 2;
+
+int noneMode = 0;
+int inputMode = 1;
+int outputMode = 2;
+
+int outputPins = 3;
+int outputSoundPin = 11;
+
+int gameMode = 0;
+int noneGameMode = 0;
+int setGameMode = 1;
+int playGameMode = 2;
+
+int bombCode[] = {-1, -1, -1, -1};
+int bombCodeActiveIndex = 3;
+
+int defuseDecrease = 13;
+int defuseIncrease = 14;
+
+int digitArray[] = {12, 9, 8, 6};
+
+
 
 void setup(){
-  setPins(0, 13, OUTPUT);
+
+  // Setup constant pins.
+  for(int i = 0; i <= outputPins; ++i){
+    pinMode(i, OUTPUT);
+  }
+  pinMode(9, OUTPUT); //TODO: Verify!
+  pinMode(10, OUTPUT);
+  pinMode(outputSoundPin, OUTPUT);
 }
 
 void loop(){
   
 }
 
+void setMode(int m){
+  mode = m;
+  if(mode == inputMode){
+    for(int i = 4; i <= 8; ++i){
+      pinMode(i, INPUT);
+    }
+  }else if(mode == outputMode){
+        for(int i = 4; i <= 8; ++i){
+      pinMode(i, OUTPUT);
+    }
+  }else{
+    mode == noneMode;
+    for(int i = 0; i <= 13; ++i){
+      pinMode(i, INPUT);
+    }
+  }
+}
 
 int input(){
- // activate input
- 
- for(int i = 0 ; i < sizeof(inputPin) ; i++){
-   pinMode(i ,inputPin[i]);
- }
- 
- digitalWrite();
- 
+  setMode(inputMode);
+  digitalWrite(0, HIGH);
+  if(digitalRead(7) == HIGH){
+    return defuseDecrease;
+  }else if(digitalRead(8) == HIGH){
+    return defuseIncrease;
+  }
+  for(int i = 0; i <= 3; ++i){
+    if(i > 0){
+      digitalWrite(i-1, LOW);
+    }
+    for(int j = 4; j <= 6; ++j){
+      if(digitalRead(j) == HIGH){
+        if(i == 3 && j == 5){
+          return 0;
+        }
+        return i * 3 + j;
+      }
+    }
+  }
+  digitalWrite(3, LOW);
 }
 
 void output(){
-  
-  setPins(0, outputPins);
-  
-  //digitalWrite(LOW);
-  //digitalWrite(HIGH);
-  
-}
-
-void setPins(int from, int to, int mode){
-  for(int i = from ; i < to ; i++){
-    pinMode(i, mode);
+  setMode(outputMode);
+  for(int i = 0; i < 4; ++i){
+    //TODO
   }
 }
+
