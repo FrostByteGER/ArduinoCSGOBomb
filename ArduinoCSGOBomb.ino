@@ -33,9 +33,15 @@ int digitDisplayArray7[] = {4,5,6};
 int digitDisplayArray8[] = {4,5,6,7,8,9,10};
 int digitDisplayArray9[] = {4,5,6,7,9,10};
 
-
-
 void setup(){
+  // Set All Digits to Output
+  for(int i = 0; i <= 3;++i){
+    pinMode(i, OUTPUT);
+  }
+  //Set all Digitsegments to Output
+  for(int i = 4; i <= 10;++i){
+    pinMode(i, OUTPUT);
+  }
 /*
   // Setup constant pins.
   for(int i = 0; i <= outputPins; ++i){
@@ -47,8 +53,22 @@ void setup(){
 }
 
 void loop(){
-  drawNumber(0,0);
-  delay(100);
+  drawNumber(4,3);
+  drawNumber(7,2);
+  drawNumber(1,1);
+  drawNumber(8,0);
+  /*
+  for(int i = 0; i < 10; i++){
+  drawNumber(i,0);
+  delay(250);
+  drawNumber(i,1);
+  delay(250);
+  drawNumber(i,2);
+  delay(250);
+  drawNumber(i,3);
+  delay(250);
+  }*/
+
 }
 
 /*
@@ -103,59 +123,56 @@ void output(){
 
 void drawNumber(int number, int digit){
   //Reset all Digits
-  for(int i = 0; i < 3;++i){
-    pinMode(i, OUTPUT);
-    digitalWrite(i, LOW);
+  for(int i = 0; i <= 3;++i){
+    digitalWrite(i, HIGH);
   }
   //Reset all Digitsegments
-  for(int i = 4; i < 10;++i){
-    pinMode(i, OUTPUT);
+  for(int i = 4; i <= 10;++i){
     digitalWrite(i, LOW);
   }
   if(number == 0){
     for(int i = 0; i < NELEMS(digitDisplayArray0); ++i){
-      pinMode(digitDisplayArray1[i], OUTPUT);
-      digitalWrite(digitDisplayArray1[i], LOW);
+      digitalWrite(digitDisplayArray0[i], HIGH);
     }
   }else if(number == 1){
     for(int i = 0; i < NELEMS(digitDisplayArray1); ++i){
-      pinMode(digitDisplayArray1[i], INPUT);
+      digitalWrite(digitDisplayArray1[i], HIGH);
     }
   }else if(number == 2){
     for(int i = 0; i < NELEMS(digitDisplayArray2); ++i){
-      pinMode(digitDisplayArray2[i], INPUT);
+      digitalWrite(digitDisplayArray2[i], HIGH);
     }
   }else if(number == 3){
     for(int i = 0; i < NELEMS(digitDisplayArray3); ++i){
-      pinMode(digitDisplayArray3[i], INPUT);
+      digitalWrite(digitDisplayArray3[i], HIGH);
     }
   }else if(number == 4){
     for(int i = 0; i < NELEMS(digitDisplayArray4); ++i){
-      pinMode(digitDisplayArray4[i], INPUT);
+      digitalWrite(digitDisplayArray4[i], HIGH);
     }
   }else if(number == 5){
     for(int i = 0; i < NELEMS(digitDisplayArray5); ++i){
-      pinMode(digitDisplayArray5[i], INPUT);
+      digitalWrite(digitDisplayArray5[i], HIGH);
     }
   }else if(number == 6){
     for(int i = 0; i < NELEMS(digitDisplayArray6); ++i){
-      pinMode(digitDisplayArray6[i], INPUT);
+      digitalWrite(digitDisplayArray6[i], HIGH);
     }
   }else if(number == 7){
     for(int i = 0; i < NELEMS(digitDisplayArray7); ++i){
-      pinMode(digitDisplayArray7[i], INPUT);
+      digitalWrite(digitDisplayArray7[i], HIGH);
     }
   }else if(number == 8){
     for(int i = 0; i < NELEMS(digitDisplayArray8); ++i){
-      pinMode(digitDisplayArray8[i], INPUT);
+      digitalWrite(digitDisplayArray8[i], HIGH);
     }
   }else if(number == 9){
     for(int i = 0; i < NELEMS(digitDisplayArray9); ++i){
-      pinMode(digitDisplayArray9[i], INPUT);
+      digitalWrite(digitDisplayArray9[i], HIGH);
     }
   }
-
-  pinMode(digit, OUTPUT);
-  digitalWrite(digit, HIGH);
+  digitalWrite(digit, LOW);
+  delay(1);
+  //if(number == 8) delay(3);
 }
 
