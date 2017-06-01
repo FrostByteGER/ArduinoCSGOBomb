@@ -22,6 +22,8 @@ int defuseDecrease = 13;
 int defuseIncrease = 14;
 
 int digitArray[] = {12, 9, 8, 6};
+
+/* old
 int digitDisplayArray0[] = {4,5,6,7,8,9};
 int digitDisplayArray1[] = {5,6};
 int digitDisplayArray2[] = {4,5,7,8,10};
@@ -32,6 +34,17 @@ int digitDisplayArray6[] = {4,6,7,8,9,10};
 int digitDisplayArray7[] = {4,5,6};
 int digitDisplayArray8[] = {4,5,6,7,8,9,10};
 int digitDisplayArray9[] = {4,5,6,7,9,10};
+*/
+byte digitSegmentArray[10][7] = {{1,1,1,1,1,1,0},
+                              {0,1,1,0,0,0,0},
+                              {1,1,0,1,1,0,1},
+                              {1,1,1,1,0,0,1},
+                              {0,1,1,0,0,1,1},
+                              {1,0,1,1,0,1,1},
+                              {1,0,1,1,1,1,1},
+                              {1,1,1,0,0,0,0},
+                              {1,1,1,1,1,1,1},
+                              {1,1,1,1,0,1,1}};
 
 void setup(){
   // Set All Digits to Output
@@ -130,6 +143,12 @@ void drawNumber(int number, int digit){
   for(int i = 4; i <= 10;++i){
     digitalWrite(i, LOW);
   }
+  
+  for(int i = 0; i < 7; ++i){
+    digitalWrite(digitSegmentArray[number][i], HIGH);
+  }
+
+  /* old
   if(number == 0){
     for(int i = 0; i < NELEMS(digitDisplayArray0); ++i){
       digitalWrite(digitDisplayArray0[i], HIGH);
@@ -171,6 +190,8 @@ void drawNumber(int number, int digit){
       digitalWrite(digitDisplayArray9[i], HIGH);
     }
   }
+  */
+
   digitalWrite(digit, LOW);
   delay(1);
   //if(number == 8) delay(3);
