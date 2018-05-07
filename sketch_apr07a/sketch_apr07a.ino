@@ -73,7 +73,7 @@ double bombTimer = 60000; // 1min
 double bepTemp = 0;
 double bepTimer = 1000; // beps per sec in relation to the bombTimer (bombTimer / bepTimer) = sec
 
-bool bepMode = true;
+bool bepMode = false;
  
 // Mode
 int mode = 1;
@@ -116,29 +116,34 @@ void showNumber(int segNumber, int deg){
   //delay(10);
 }
 
-// is called if a Butten is pressed und released
+// is called if a Butten is pressed and released
 void clicked(int inputClick){
 
-  // displayNum[2] = inputClick;
-  // selectedNumber
+  // change Selected Segment
+  if(inputClick & inStar){
+    displayNum[selectedNumber] = displayNum[selectedNumber]-128;
+    selectedNumber = (selectedNumber+3)%4;
+    displayNum[selectedNumber] = displayNum[selectedNumber]+128;
+  }else if(inputClick & inCross){
+    displayNum[selectedNumber] = displayNum[selectedNumber]-128;
+    selectedNumber = (selectedNumber+1)%4;
+    displayNum[selectedNumber] = displayNum[selectedNumber]+128;
+  }
+  
   if(mode == inputMode){
 
     // change to defusemode
     if(inputClick & inStar && inputClick & inCross){
       mode = 2;
+      
+      for(int i=0; i < 4; i++){
+        selectedNumbers[i] = displayNum[i] & (!128);
+        displayNum[i] = lineMid;
+      }
       return;
     }
-    
-    if(inputClick & inStar){
-      displayNum[selectedNumber] = displayNum[selectedNumber]-128;
-      selectedNumber = (selectedNumber+3)%4;
-      displayNum[selectedNumber] = displayNum[selectedNumber]+128;
-    }else if(inputClick & inCross){
-      displayNum[selectedNumber] = displayNum[selectedNumber]-128;
-      selectedNumber = (selectedNumber+1)%4;
-      displayNum[selectedNumber] = displayNum[selectedNumber]+128;
-    }
-    
+
+    // change Number of selected Number
     if(inputClick & inZero){
       displayNum[selectedNumber] = numbers[0]+128;
     }else if(inputClick & inOne){
@@ -160,6 +165,13 @@ void clicked(int inputClick){
     }else if(inputClick & inNine) {
       displayNum[selectedNumber] = numbers[9]+128;
     }
+  }else if(mode == defNorm){
+    
+    if(true){
+      
+    }
+
+    
   }
   
   // exampel
@@ -170,29 +182,77 @@ void clicked(int inputClick){
 
 void tick(int delta){
 
-  if(mode > inputMode){
+  if(mode == defNorm || mode == defDefuser){
 
     bombTimer -= delta;
     bepTemp -= delta;
     
-    if(bombTimer < 0){
+    if(bombTimer <= 0){
       //TODO Lose
-      mode = inputMode;
-      digitalWrite(bepPin,LOW);
+      mode = inputMode; // change Mode
+      digitalWrite(bepPin,LOW); // turn bep of
     }
-
-    if(!bepMode){
-      bepMode = true;
-      digitalWrite(bepPin,LOW);
+    
+    if(bepMode){
+      turnBepOff();
     }
     
     if(bepTemp < 0){
-      digitalWrite(bepPin,HIGH);
-      bepTemp = (bombTimer/ bombTotalTime) * bepTimer + 10;
-      //delay(1);
-      bepMode = false;
+      trunBepOn();
+      bepTemp = (bombTimer/ bombTotalTime) * bepTimer;
     }
+  } 
+}
+
+void turnBepOff(){
+  digitalWrite(bepPin,LOW);
+  bepMode = false;
+}
+
+void trunBepOn(){
+  digitalWrite(bepPin,HIGH);
+}
+
+int inputNumToDisplayNum(int inputNum){
+  return inputNumToDisplayNum(inputNum, false);
+}
+
+int inputNumToDisplayNum(int inputNum, bool point){
+
+  int addPoint = 0;
+
+  if(point){
+    addPoint = 128;
   }
+  
+  if(inputNum == inZero){
+    return numbers[0]|addPoint;
+  }else if(inputNum == inOne){
+    return numbers[1]|addPoint;
+  }else if(inputNum == inTwo){
+    return numbers[2]|addPoint;
+  }else if(inputNum == inThree) {
+    return numbers[3]|addPoint;
+  }else if(inputNum == inFoure) {
+    return numbers[4]|addPoint;
+  }else if(inputNum == inFive) {
+    return numbers[5]|addPoint;
+  }else if(inputNum == inSix) {
+    return numbers[6]|addPoint;
+  }else if(inputNum == inSeven) {
+    return numbers[7]|addPoint;
+  }else if(inputNum == inEight) {
+    return numbers[8]|addPoint;
+  }else if(inputNum == inNine) {
+    return numbers[9]|addPoint;
+  }
+}
+
+int displayNumToInputNum(int displayNum){
+  return displayNumToInputNum(displayNum);
+}
+
+int displayNumToInputNum(int displayNum, bool point){
   
 }
 
@@ -276,27 +336,4 @@ void loop() {
   delay(3);
   showNumber(displayNum[3],3);
   delay(3);
-  
-  /**
-  if(timer >= 100 && false){
-    timer = 0;
-
-    if(displayNum[3] == selectNumber){
-      displayNum[3] = lineMid;
-      displayNum[2] = selectNumber;
-    }else if(displayNum[2] == selectNumber){
-      displayNum[2] = lineMid;
-      displayNum[1] = selectNumber;
-    }else if(displayNum[1] == selectNumber){
-      displayNum[1] = lineMid;
-      displayNum[0] = selectNumber;
-    }else if(displayNum[0] == selectNumber){
-      displayNum[0] = lineMid;
-      displayNum[3] = selectNumber;
-    }
-  }
-  **/
-
-
-  //timer+=1;
 }
