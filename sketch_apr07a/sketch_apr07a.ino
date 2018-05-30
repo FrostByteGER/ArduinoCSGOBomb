@@ -121,24 +121,24 @@ void clicked(int inputClick){
 
   // change Selected Segment
   if(inputClick & inStar){
-    displayNum[selectedNumber] = displayNum[selectedNumber]-128;
+    displayNum[selectedNumber] = displayNum[selectedNumber]&(!128);
     selectedNumber = (selectedNumber+3)%4;
-    displayNum[selectedNumber] = displayNum[selectedNumber]+128;
+    displayNum[selectedNumber] = displayNum[selectedNumber]|128;
   }else if(inputClick & inCross){
-    displayNum[selectedNumber] = displayNum[selectedNumber]-128;
+    displayNum[selectedNumber] = displayNum[selectedNumber]&(!128);
     selectedNumber = (selectedNumber+1)%4;
-    displayNum[selectedNumber] = displayNum[selectedNumber]+128;
+    displayNum[selectedNumber] = displayNum[selectedNumber]|128;
   }
   
   if(mode == inputMode){
 
     // change to defusemode
     if(inputClick & inStar && inputClick & inCross){
-      mode = 2;
+      mode = defNorm;
       
       for(int i=0; i < 4; i++){
         selectedNumbers[i] = displayNum[i] & (!128);
-        displayNum[i] = lineMid;
+        displayNum[i] = lineMid | (displayNum[i] & 128);
       }
       return;
     }
@@ -166,12 +166,18 @@ void clicked(int inputClick){
       displayNum[selectedNumber] = numbers[9]+128;
     }
   }else if(mode == defNorm){
-    
-    if(true){
+    if(inputClick == inStar || inputClick == inCross){
       
+    }else if(displayNum[selectedNumber]&(!128) != lineMid && false){
+      
+    }else if(inputNumToDisplayNum(inputClick) == selectedNumbers[selectedNumber] || true){
+      displayNum[selectedNumber] = numbers[0];//selectedNumbers[selectedNumber] | 128;
+    }else if(inputNumToDisplayNum(inputClick) != selectedNumbers[selectedNumber]){
+      for(int i=0; i < 4; i++){
+        selectedNumbers[i] = displayNum[i] & (!128);
+        displayNum[i] = lineMid | (displayNum[i] & 128);
+      }
     }
-
-    
   }
   
   // exampel
@@ -191,14 +197,15 @@ void tick(int delta){
       //TODO Lose
       mode = inputMode; // change Mode
       digitalWrite(bepPin,LOW); // turn bep of
+      turnBepOff();
     }
     
     if(bepMode){
       turnBepOff();
     }
     
-    if(bepTemp < 0){
-      trunBepOn();
+    if(bepTemp < 0){  
+      trunBepOn();      
       bepTemp = (bombTimer/ bombTotalTime) * bepTimer;
     }
   } 
@@ -211,6 +218,7 @@ void turnBepOff(){
 
 void trunBepOn(){
   digitalWrite(bepPin,HIGH);
+  bepMode = true;
 }
 
 int inputNumToDisplayNum(int inputNum){
@@ -249,11 +257,30 @@ int inputNumToDisplayNum(int inputNum, bool point){
 }
 
 int displayNumToInputNum(int displayNum){
-  return displayNumToInputNum(displayNum);
-}
 
-int displayNumToInputNum(int displayNum, bool point){
+  if(displayNum == numbers[0]){
+    return inZero;
+  }else if(displayNum == numbers[1]){
+    return inOne;
+  }else if(displayNum == numbers[2]){
+    return inTwo;
+  }else if(displayNum == numbers[3]) {
+    return inThree;
+  }else if(displayNum == numbers[4]) {
+    return inFoure;
+  }else if(displayNum == numbers[5]) {
+    return inFive;
+  }else if(displayNum == numbers[6]) {
+    return inSix;
+  }else if(displayNum == numbers[7]) {
+    return inSeven;
+  }else if(displayNum == numbers[8]) {
+    return inEight;
+  }else if(displayNum == numbers[9]) {
+    return inNine;
+  }
   
+  return 0;
 }
 
 void setup() {
