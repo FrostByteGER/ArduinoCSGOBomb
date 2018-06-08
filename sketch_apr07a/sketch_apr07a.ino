@@ -32,7 +32,7 @@ int debugSlave = 0; // curent Slave Pin
 
 // 7 Segment (uses pin 0 to 11 ,0-7 Master ,8-11 Slave)
 // this "Numbers" get displayed
-int displayNum[] = {191,63,63,63};
+int displayNum[] = {6,91,79,255};
 
 // index zu tile
 //   -1-
