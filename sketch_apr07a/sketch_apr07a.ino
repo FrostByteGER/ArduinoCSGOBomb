@@ -32,7 +32,7 @@ int debugSlave = 0; // curent Slave Pin
 
 // 7 Segment (uses pin 0 to 11 ,0-7 Master ,8-11 Slave)
 // this "Numbers" get displayed
-int displayNum[] = {6,91,79,255};
+int displayNum[] = {64,64,64,64};
 
 // index zu tile
 //   -1-
@@ -121,11 +121,11 @@ void clicked(int inputClick){
 
   // change Selected Segment
   if(inputClick & inStar){
-    displayNum[selectedNumber] = displayNum[selectedNumber]&(!128);
+    displayNum[selectedNumber] = displayNum[selectedNumber]&127;
     selectedNumber = (selectedNumber+3)%4;
     displayNum[selectedNumber] = displayNum[selectedNumber]|128;
   }else if(inputClick & inCross){
-    displayNum[selectedNumber] = displayNum[selectedNumber]&(!128);
+    displayNum[selectedNumber] = displayNum[selectedNumber]&127;
     selectedNumber = (selectedNumber+1)%4;
     displayNum[selectedNumber] = displayNum[selectedNumber]|128;
   }
@@ -137,7 +137,7 @@ void clicked(int inputClick){
       mode = defNorm;
       
       for(int i=0; i < 4; i++){
-        selectedNumbers[i] = displayNum[i] & (!128);
+        selectedNumbers[i] = displayNum[i] & 127;
         displayNum[i] = lineMid | (displayNum[i] & 128);
       }
       return;
@@ -165,16 +165,37 @@ void clicked(int inputClick){
     }else if(inputClick & inNine) {
       displayNum[selectedNumber] = numbers[9]+128;
     }
+
+    for(int i=0; i < 4; i++){
+      //selectedNumbers[i] = displayNum[i] & (!128);
+      // = lineMid | (displayNum[i] & 128);
+      
+      //Serial.print(displayNum[i]);
+      //Serial.print(", ");
+    }
+    //Serial.println("");
+    
+    
   }else if(mode == defNorm){
     if(inputClick == inStar || inputClick == inCross){
       
-    }else if(displayNum[selectedNumber]&(!128) != lineMid && false){
+    }else if(displayNum[selectedNumber]&127 != lineMid){
       
-    }else if(inputNumToDisplayNum(inputClick) == selectedNumbers[selectedNumber] || true){
-      displayNum[selectedNumber] = numbers[0];//selectedNumbers[selectedNumber] | 128;
+    }else if(inputNumToDisplayNum(inputClick) == selectedNumbers[selectedNumber]){
+      displayNum[selectedNumber] = selectedNumbers[selectedNumber] | 128;
+
+      if((displayNum[0] & 127) == selectedNumbers[0] && 
+         (displayNum[1] & 127) == selectedNumbers[1] &&
+         (displayNum[2] & 127) == selectedNumbers[2] &&
+         (displayNum[3] & 127) == selectedNumbers[3]){
+        mode = 1;
+        turnBepOff();
+        // You won
+      }
+      
     }else if(inputNumToDisplayNum(inputClick) != selectedNumbers[selectedNumber]){
       for(int i=0; i < 4; i++){
-        selectedNumbers[i] = displayNum[i] & (!128);
+        selectedNumbers[i] = displayNum[i] & 127;
         displayNum[i] = lineMid | (displayNum[i] & 128);
       }
     }
@@ -303,6 +324,8 @@ void setup() {
   pinMode(bepPin,OUTPUT);
 
   //debug
+
+  //Serial.begin(9600);
 }
 
 void loop() {
